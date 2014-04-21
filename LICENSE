@@ -1,3 +1,12 @@
+First, a little note by E314c:
+I'm not too hip on the licensing laws, i'll be learning it next year.
+Be aware that, whilst most of the code in this project, to my understanding,
+okay to be released under the GNU license, some may not, and I apologise in advance.
+
+This code utilises the reg932.h, a standard library for the Phillips P89LPC932.
+That code is (c) Keil Elektronik. 
+
+
 GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
