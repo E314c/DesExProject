@@ -1,7 +1,7 @@
 #include <REG932.H>
 #include "definitions.h"
 
-/* File containing fucntions to allow use of keypad connected to port 0.
+/* File containing functions to allow use of keypad connected to port 0.
    Uses: Port 0 bits 0 - 6.
    Author: PLJ 08-03-11
    Revisions: none.

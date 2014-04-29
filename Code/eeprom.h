@@ -1,9 +1,14 @@
 //Header for EEPROM.c
-#define PASS_FLAG 0 //address of "current password" flag
-#define PASS_ADDR 1	//start address of passcode data (with regards to eeprom addresses)
-#define PASS_1	0x62 	//	flag values to denote which stored
-#define PASS_2	0xa9 	//	password to use.(Arbitrary Values)
 
+char eeprom_read(unsigned char address);
+//input: address to be read
+//return: data (byte)
+
+
+void eeprom_write(unsigned char wr_data, unsigned char address);
+//input: data (byte) to be written and address to write to
+//return: none
+	
 void pass_read(char *pass);
 //Reads the eeprom address  of the passcode and writes the data to given array
 //input: pointer to array (RAM)

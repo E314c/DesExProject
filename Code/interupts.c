@@ -11,7 +11,7 @@ extern bit key_flag;
 /*Timer Reload Values*/
 /*
 -CPU clock is at 7.373Mhz, timers clock at half this.
--for timer interrupt frequency of 100, interrupt needs to occur after 36865 clocks
+-for timer interrupt frequency of 100Hz, interrupt needs to occur after 36865 clocks
 -register must be: 65535-36865 == 28670
 -28670 in hex is 0x6FFE
 	on reload:
@@ -40,7 +40,7 @@ void settim0 ()
 
 void timer0 () interrupt 1 using 2	  //interrupt 1 is 'Timer 0 Interrupt'(from UM). 'using 2' refers to the scratchpad/cache used by the processor during the processes 
 //Interrupt functions of timer_0.
-//Freq: 200 Hz  (also copy this to the variable)
+//Freq: 100 Hz  (also copy this to the 'clock_freq' variable)
 //Uses: Used to time delays in the system
 {  // --- timer 0 interrupt handling routine ---
 

@@ -16,7 +16,7 @@
 
 char eeprom_read(unsigned char address)
 //input: address to be read
-//return: data
+//return: data (byte)
 {
 	DEECON &= 0x00;					//set DEECON register to all 0's. LSB is EADR8, so if address >128, will need to be set to 1
 	DEEADR=address;					// read from pass_flag address
@@ -25,6 +25,8 @@ char eeprom_read(unsigned char address)
 }
 
 void eeprom_write(unsigned char wr_data, unsigned char address)
+//input: data (byte) to be written and address to write to
+//return: none
 {
 	DEECON &= 0x00;					//set DEECON register to all 0's. LSB is EADR8, so if address >128, will need to be set to 1
 	DEEDAT=wr_data;					//writes in character for given passcode position

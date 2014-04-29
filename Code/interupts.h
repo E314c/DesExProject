@@ -1,4 +1,3 @@
-/*Header for interupts*/
 
 void settim0 ();
 // --- function to initialise timer 0 ---

@@ -1,5 +1,5 @@
 #include <REG932.H>
-#include "lednum2.h"
+//#include "lednum2.h" //is this still needed?
 #include "scan.h"
 #include "eeprom.h"
 #include "LED.h"
@@ -12,9 +12,7 @@
 
 
 code extern unsigned int clock_freq; 		//defined in 'interupts.c'. defines the frequency(Hz) of increases in global "clock". Used to calc time delays, value in "interrupts.c"
-code extern unsigned int clock_freq; 		//defined in 'interupts.c'. defines the frequency(Hz) of increases in global "clock". Used to calc time delays, value in "interrupts.c"
 extern unsigned int clock;				//defined in 'interupts.c'. clock is used to time operations. should be increased by an interrupt.
-char screen[4];						//4 place string for screen display data
 bit key_flag;		 				//flag to show when key has been pressed.
 unsigned char key_pressed;					//key pressed.
 
@@ -25,8 +23,6 @@ char check_arrays(char *str_1, char *str_2)
 //input: 2 arrays
 //output: outputs 1 if code correct, else 0
 //sys reqs: define PASS_LENGTH (should be in definitions.h);
-
-//for the lock system, this function should only be called when enter is pressed.
 {
 	char flag=0, x;
  
@@ -71,7 +67,7 @@ void display_code(char *str, char entered)
 		Write(str+(entered-4)); 	//as the display function will just choose the first 4 chars, send the passcode, but with an appropriate offset 
 	else
 		{
-           switch(entered)			//perhaps a tad complex. Essentially fills the 'send' array from the 4th position, depending on how many characters have been entered.
+           switch(entered)			//perhaps a tad complex. Essentially fills the 'send' array from the 4th position, depending on how many characters have been entered. This means the display writes in from left digit.
 		    {
              case 3:
                   send[6-entered]=str[2];
@@ -91,7 +87,8 @@ void display_code(char *str, char entered)
 
 char passcode_entering(char *pass, int idle_time)
 //input: address of array to store passcode, idle time in seconds
-//returns: 0 if timer interrupt causes exit. KEY_ENTER if enter causes exit. KEY_CHANGE if change causes exit.
+//returns: 0 if timer interrupt causes exit. KEY_ENTER if 'enter' causes exit. KEY_CHANGE if 'change' causes exit.
+//reqs: display_code(), PASS_LENGTH, KEY_ENTER, KEY_CHANGE, clock, clock_freq, key_pressed, key_flag.
 {
 	int entered=0,loop;
 	
@@ -151,9 +148,10 @@ void main (void)
 	DisplayInit();
 	settim0 ();
 	init_scan();
+	init_door();
 		/*This section may cause issues on DEV board as it's not configured to hold P1.4 low during normal operation*/
 		P1M1|=0x10;
-		P1M2&=0xEF; //sets P1.4 to '10' or input mode
+		P1M2&=0xEF; //sets P1.4 to '10'(input mode)
 		if((P1&0x10)==0x10) //if P1.4 is held high (Hardware override to wipe eeprom)
 		{
 			eeprom_clear(0);
@@ -161,6 +159,7 @@ void main (void)
 			while(1); //infinite loop, Hardware must be reset again.
 		}
 		//*************************************************************************************************************/
+		
 	for(loop=0;loop<PASS_LENGTH;++loop)
 	{
 		pass[loop]=PASS_NULL; //sets the passcode to PASS_NULL
@@ -168,11 +167,11 @@ void main (void)
 	entered=0;
 	attempts=0;
 	Write("init");
-	//Should I shut the door here? Spec doesn't Spec and I would assume so, but DrSeed =! assumptions
+	//Should I shut the door here? Spec doesn't Spec and I would assume so.
 	}
 	
 	
-	//infinite loop
+	//infinite loop begins
 	while(1)
 	{
 		/*--idling state.--*/
@@ -189,7 +188,7 @@ void main (void)
 				
 				//passcode is correct
 				//enter open routine
-				open_door();
+				door_routine();
 				//should include passcode change section.
 				
 				
@@ -210,7 +209,7 @@ void main (void)
 				{
 					Write("Bar ");
 					
-					for(clock=0;clock<(120*clock_freq);)  /*SET TO 10 FOR TESTING, NEEDS TO BE 120 for release*/
+					for(clock=0;clock<(120*clock_freq);) 
 						{/*enter three minute loop*/}
 					
 					attempts=0;	//reset attempts to 0
